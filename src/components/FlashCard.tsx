@@ -12,7 +12,7 @@ export default function FlashCard() {
                     <p>A notebook can kill anyone whose name is written in it.</p>
                 </div>
                 /* Back */
-                <div className="absolute inset-0 rounded-md border shadow-2xl flex items-center justify-center bg-violet-400 backface-hidden transform-[rotateX(180deg)]">
+                <div className="absolute inset-0 rounded-md border shadow-2xl flex items-center justify-center bg-teal-50 backface-hidden transform-[rotateX(180deg)]">
                     <p>Death Note</p>
                 </div>
             </div>
