@@ -18,14 +18,25 @@ export default function FlashCardDeck() {
     const [shuffledIndexes] = useState(() => createShuffledIndexes(Cards.length));
     const [guess, setGuess] = useState<string>("");
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+    const [currentStreak, setCurrentStreak] = useState<number>(0);
+    const [longestStreak, setLongestStreak] = useState<number>(0);
 
     function checkGuess() {
         const answer = Cards[shuffledIndexes[index]].solution.toLowerCase();
         const guessed = guess.toLowerCase();
         if (answer === guessed) {
             setIsCorrect(true);
+            setCurrentStreak((prevCurrent) => {
+                const newCurrent = prevCurrent + 1;
+                setLongestStreak((prevLongest) => {
+                    const newLongest = Math.max(prevLongest, newCurrent);
+                    return newLongest;
+                })
+                return newCurrent;
+            });
         } else {
             setIsCorrect(false);
+            setCurrentStreak(0);
         }
     }
     function toggleFlip() {
@@ -45,14 +56,17 @@ export default function FlashCardDeck() {
     }
 
     return (
-        <>
+        <div className="flex flex-col items-center">
+            <div className="mb-4 flex gap-5">
+                <p>Current Streak: {currentStreak}</p>
+                <p>Longest Streak: {longestStreak}</p>
+            </div>
             <FlashCard
                 key={index}
                 currentCard={Cards[shuffledIndexes[index]]}
                 toggleFlip={toggleFlip}
                 flipped={flipped}
             />
-
             <Navigation
                 goForward={goForward}
                 goBackward={goBackward}
@@ -64,6 +78,6 @@ export default function FlashCardDeck() {
                 isCorrect={isCorrect}
                 setIsCorrect={setIsCorrect}
             />
-        </>
+        </div>
     );
 }
