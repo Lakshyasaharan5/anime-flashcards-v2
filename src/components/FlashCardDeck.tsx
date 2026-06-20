@@ -16,16 +16,31 @@ export default function FlashCardDeck() {
     const [index, setIndex] = useState(0);
     const [flipped, setFlipped] = useState(false);
     const [shuffledIndexes] = useState(() => createShuffledIndexes(Cards.length));
+    const [guess, setGuess] = useState<string>("");
+    const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
+    function checkGuess() {
+        const answer = Cards[shuffledIndexes[index]].solution.toLowerCase();
+        const guessed = guess.toLowerCase();
+        if (answer === guessed) {
+            setIsCorrect(true);
+        } else {
+            setIsCorrect(false);
+        }
+    }
     function toggleFlip() {
         setFlipped((prev) => !prev);
     }
     function goForward() {
         setFlipped(false);
+        setIsCorrect(null);
+        setGuess("");
         setIndex((prev) => prev + 1);
     }
     function goBackward() {
         setFlipped(false);
+        setIsCorrect(null);
+        setGuess("");
         setIndex((prev) => prev - 1);
     }
 
@@ -43,6 +58,11 @@ export default function FlashCardDeck() {
                 goBackward={goBackward}
                 isFirst={index === 0}
                 isLast={index === shuffledIndexes.length - 1}
+                guess={guess}
+                setGuess={setGuess}
+                checkGuess={checkGuess}
+                isCorrect={isCorrect}
+                setIsCorrect={setIsCorrect}
             />
         </>
     );
