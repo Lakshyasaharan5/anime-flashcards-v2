@@ -2,6 +2,7 @@ import FlashCard from "./FlashCard";
 import Navigation from "./Navigation";
 import { Cards } from "../assets/data";
 import { useState } from "react";
+import isFuzzyMatch from "@/lib/fuzzyMatch";
 
 function createShuffledIndexes(length: number): number[] {
     const indexes = Array.from({ length }, (_, index) => index);
@@ -24,7 +25,7 @@ export default function FlashCardDeck() {
     function checkGuess() {
         const answer = Cards[shuffledIndexes[index]].solution.toLowerCase();
         const guessed = guess.toLowerCase();
-        if (answer === guessed) {
+        if (isFuzzyMatch(answer, guessed)) {
             setIsCorrect(true);
             setCurrentStreak((prevCurrent) => {
                 const newCurrent = prevCurrent + 1;
