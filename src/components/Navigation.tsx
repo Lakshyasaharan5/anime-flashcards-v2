@@ -12,6 +12,7 @@ type NavigationProps = {
     checkGuess: () => void,
     isCorrect: boolean | null,
     setIsCorrect: React.Dispatch<React.SetStateAction<boolean>>,
+    shuffleCards: () => void,
 }
 
 export default function Navigation(props: NavigationProps) {
@@ -40,6 +41,7 @@ export default function Navigation(props: NavigationProps) {
                 onChange={(e) => props.setGuess(e.target.value)}
             />
             <Button size='lg' className='hover:cursor-pointer' onClick={props.checkGuess}>Check</Button>
+            <Button size='lg' className='hover:cursor-pointer' onClick={props.shuffleCards}>Shuffle Cards</Button>
         </div>
     );
 }

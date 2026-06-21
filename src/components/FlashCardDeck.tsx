@@ -16,11 +16,47 @@ function createShuffledIndexes(length: number): number[] {
 export default function FlashCardDeck() {
     const [index, setIndex] = useState(0);
     const [flipped, setFlipped] = useState(false);
-    const [shuffledIndexes] = useState(() => createShuffledIndexes(Cards.length));
+    const [shuffledIndexes, setShuffledIndexes] = useState(() => createShuffledIndexes(Cards.length));
     const [guess, setGuess] = useState<string>("");
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [currentStreak, setCurrentStreak] = useState<number>(0);
     const [longestStreak, setLongestStreak] = useState<number>(0);
+    const [masteredIndexes, setMasteredIndexes] = useState<number[]>([]);
+
+    function markAsMastered() {
+        const currentCardIndex = shuffledIndexes[index];
+
+        setMasteredIndexes((previous) => {
+            if (previous.includes(currentCardIndex)) {
+                return previous;
+            }
+
+            return [...previous, currentCardIndex];
+        });
+
+        const remainingIndexes = shuffledIndexes.filter(
+            (cardIndex) => cardIndex !== currentCardIndex
+        );
+
+        setShuffledIndexes(remainingIndexes);
+
+        setFlipped(false);
+        setIsCorrect(null);
+        setGuess("");
+
+        if (index >= remainingIndexes.length) {
+            setIndex(Math.max(remainingIndexes.length - 1, 0));
+        }
+    }
+
+    function shuffleCards() {
+        const currentCardIndex = shuffledIndexes[index];
+        const newShuffledIndexes = createShuffledIndexes(Cards.length);
+        const newCurrentPosition =
+            newShuffledIndexes.indexOf(currentCardIndex);
+        setShuffledIndexes(newShuffledIndexes);
+        setIndex(newCurrentPosition);
+    }
 
     function checkGuess() {
         const answer = Cards[shuffledIndexes[index]].solution.toLowerCase();
@@ -56,18 +92,39 @@ export default function FlashCardDeck() {
         setIndex((prev) => prev - 1);
     }
 
+    if (shuffledIndexes.length === 0) {
+        return (
+            <div className="flex flex-col items-center gap-4">
+                <h2 className="text-2xl font-bold">
+                    You mastered every card!
+                </h2>
+
+                <p>Mastered cards: {masteredIndexes.length}</p>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col items-center">
             <div className="mb-4 flex gap-5">
                 <p>Current Streak: {currentStreak}</p>
                 <p>Longest Streak: {longestStreak}</p>
             </div>
-            <FlashCard
-                key={index}
-                currentCard={Cards[shuffledIndexes[index]]}
-                toggleFlip={toggleFlip}
-                flipped={flipped}
-            />
+            <div className="relative">
+                <button
+                    type="button"
+                    onClick={markAsMastered}
+                    className="absolute right-2 top-2 z-10 rounded-md bg-violet-400 px-3 py-1 text-sm text-white"
+                >
+                    Mastered
+                </button>
+                <FlashCard
+                    key={shuffledIndexes[index]}
+                    currentCard={Cards[shuffledIndexes[index]]}
+                    toggleFlip={toggleFlip}
+                    flipped={flipped}
+                />
+            </div>
             <Navigation
                 goForward={goForward}
                 goBackward={goBackward}
@@ -78,6 +135,7 @@ export default function FlashCardDeck() {
                 checkGuess={checkGuess}
                 isCorrect={isCorrect}
                 setIsCorrect={setIsCorrect}
+                shuffleCards={shuffleCards}
             />
         </div>
     );

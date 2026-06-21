@@ -63,7 +63,7 @@ export const Cards: Card[] = [
     {
         problem: "Which romance anime follows Akane as she becomes closer to a highly skilled gamer she meets online?",
         solution: "Loving Yamada at Lv999",
-        difficulty: "medium",
+        difficulty: "hard",
         image: "/yamada.jpg"
     },
     {
